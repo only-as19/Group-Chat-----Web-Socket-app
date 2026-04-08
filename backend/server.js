@@ -1,13 +1,17 @@
 import { Server } from 'socket.io';
 import { createServer } from 'http';
 import express from 'express';
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+import path from 'path';
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
 const ROOM = 'group';
 const server = createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:5173',
+    origin: '*',
   },
 });
 
@@ -28,14 +32,15 @@ io.on('connection', (socket) => {
   socket.on('showTyping', (userName) => {
     socket.to(ROOM).emit('showTyping', userName);
   });
-    
+
   socket.on('removeTyping', (userName) => {
     socket.to(ROOM).emit('removeTyping', userName);
   });
 });
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
-app.get('/', (req, res) => {
-  res.send('<h1>Hello world</h1>');
+app.get('*splat', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
 });
 
 server.listen(4600, () => {

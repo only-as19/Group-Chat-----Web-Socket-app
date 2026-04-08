@@ -11,60 +11,57 @@ export default function App() {
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState('');
   const [typers, setTypers] = useState([]);
-  const time = useRef(null)
+  const time = useRef(null);
   //webSocket configurations
 
   useEffect(() => {
     socket.current = connectWS();
 
     socket.current.on('connect', () => {
-       setTimeout(() => {
-         socket.current.on('roomNotice', (userName) => {
-           toast.success(`${userName} is added to group`);
-         });
-       }, 100);
+      setTimeout(() => {
+        socket.current.on('roomNotice', (userName) => {
+          toast.success(`${userName} is added to group`);
+        });
+      }, 100);
       socket.current.on('chatMessage', (msg) => {
-        console.log(msg);
         setMessages((prev) => [...prev, msg]);
       });
 
       socket.current.on('showTyping', (userName) => {
-        console.log(`${userName} is typing`);
         setTypers((prev) => {
           const isExist = prev.find((user) => user === userName);
           if (!isExist) {
             return [...prev, userName];
           }
           return prev;
-        })
-        
+        });
       });
 
       socket.current.on('removeTyping', (userName) => {
         setTypers((prev) => {
-          const typers = prev.filter(typer => typer !== userName)
-          return typers
-        })
-      })
+          const typers = prev.filter((typer) => typer !== userName);
+          return typers;
+        });
+      });
     });
     return () => {
       socket.current.off('roomNotice');
       socket.current.off('chatMessage');
       socket.current.off('removeTyping');
       socket.current.off('stopTyping');
-    }
+    };
   }, []);
   useEffect(() => {
     if (text) {
       socket.current.emit('showTyping', userName);
-      clearTimeout(time.current)
+      clearTimeout(time.current);
     }
     time.current = setTimeout(() => {
-      socket.current.emit('removeTyping',userName)
-    }, 1000)
+      socket.current.emit('removeTyping', userName);
+    }, 1000);
     return () => {
-      clearTimeout(time.current)
-    }
+      clearTimeout(time.current);
+    };
   }, [text]);
 
   // FORMAT TIMESTAMP TO HH:MM FOR MESSAGES
