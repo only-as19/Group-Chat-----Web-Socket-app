@@ -14,6 +14,13 @@ export default function App() {
   
   useEffect(() => {
     socket.current = connectWS()
+    
+    socket.current.on('connect', () => {
+      socket.current.on('roomNotice', (userName) => {
+        console.log(`${userName} is added to group`);
+        
+     })
+    })
   },[])
  
   
@@ -37,7 +44,7 @@ export default function App() {
     e.preventDefault();
     const trimmed = inputName.trim();
     if (!trimmed) return;
-
+  socket.current.emit('joinRoom', trimmed);
     setUserName(trimmed);
     setShowNamePopup(false);
   }
