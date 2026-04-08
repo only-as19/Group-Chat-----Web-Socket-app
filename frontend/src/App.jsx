@@ -44,6 +44,12 @@ export default function App() {
         })
       })
     });
+    return () => {
+      socket.current.off('roomNotice');
+      socket.current.off('chatMessage');
+      socket.current.off('removeTyping');
+      socket.current.off('stopTyping');
+    }
   }, []);
   useEffect(() => {
     if (text) {
