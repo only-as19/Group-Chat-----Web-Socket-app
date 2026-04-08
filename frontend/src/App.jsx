@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { connectWS } from './ws';
 
 export default function App() {
-  const socket = useRef(null)
+  const socket = useRef(null);
   const [userName, setUserName] = useState('');
   const [showNamePopup, setShowNamePopup] = useState(true);
   const [inputName, setInputName] = useState('');
@@ -11,25 +11,20 @@ export default function App() {
   const [text, setText] = useState('');
 
   //webSocket configurations
-  
+
   useEffect(() => {
-    socket.current = connectWS()
-    
+    socket.current = connectWS();
+
     socket.current.on('connect', () => {
       socket.current.on('roomNotice', (userName) => {
         console.log(`${userName} is added to group`);
-        
-     })
-    })
-  },[])
- 
-  
-
-
-
-
-
-
+      });
+      socket.current.on('chatMessage', (msg) => {
+        console.log(msg);
+        setMessages((prev)=> [...prev,msg])
+      });
+    });
+  }, []);
 
   // FORMAT TIMESTAMP TO HH:MM FOR MESSAGES
   function formatTime(ts) {
@@ -44,7 +39,7 @@ export default function App() {
     e.preventDefault();
     const trimmed = inputName.trim();
     if (!trimmed) return;
-  socket.current.emit('joinRoom', trimmed);
+    socket.current.emit('joinRoom', trimmed);
     setUserName(trimmed);
     setShowNamePopup(false);
   }
@@ -61,6 +56,9 @@ export default function App() {
       text: t,
       ts: Date.now(),
     };
+
+    //emit message
+    socket.current.emit('chatMessage', msg);
     setMessages((m) => [...m, msg]);
 
     setText('');
