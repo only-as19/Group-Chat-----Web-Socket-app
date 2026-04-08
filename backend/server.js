@@ -39,8 +39,10 @@ io.on('connection', (socket) => {
 });
 app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
-app.get('*splat', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
+app.get('/{*splat}', (req, res) => {
+  const filePath = path.join(__dirname, '../frontend/dist/index.html');
+  console.log('Serving file from:', filePath); // ✅ check this in Render logs
+  res.sendFile(filePath);
 });
 
 server.listen(4600, () => {
