@@ -10,6 +10,7 @@ export default function App() {
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState('');
   const [typers, setTypers] = useState([]);
+  const time = useRef(null)
   //webSocket configurations
 
   useEffect(() => {
@@ -35,11 +36,25 @@ export default function App() {
         })
         
       });
+
+      socket.current.on('removeTyping', (userName) => {
+        setTypers((prev) => {
+          const typers = prev.filter(typer => typer !== userName)
+          return typers
+        })
+      })
     });
   }, []);
   useEffect(() => {
     if (text) {
       socket.current.emit('showTyping', userName);
+      clearTimeout(time.current)
+    }
+    time.current = setTimeout(() => {
+      socket.current.emit('removeTyping',userName)
+    }, 1000)
+    return () => {
+      clearTimeout(time.current)
     }
   }, [text]);
 

@@ -28,6 +28,10 @@ io.on('connection', (socket) => {
   socket.on('showTyping', (userName) => {
     socket.to(ROOM).emit('showTyping', userName);
   });
+    
+  socket.on('removeTyping', (userName) => {
+    socket.to(ROOM).emit('removeTyping', userName);
+  });
 });
 
 app.get('/', (req, res) => {
