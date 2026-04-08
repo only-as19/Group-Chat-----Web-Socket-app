@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "build": "cd frontend && npm i && npm run build",
+    "build": "npm i --prefix backend && npm i --prefix frontend && npm run build --prefix frontend",
     "start": " cd backend && node server.js",
     "server": "cd backend && nodemon server",
     "client": "cd frontend && npm run dev",
