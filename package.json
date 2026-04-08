@@ -1,0 +1,13 @@
+{
+  "scripts": {
+    "server": "cd backend && nodemon server",
+    "client": "cd frontend && npm run dev",
+    "dev": "concurrently --kill-others-on-fail \" npm run server\" \" npm run client\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  },
+  "dependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
