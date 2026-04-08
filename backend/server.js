@@ -11,7 +11,7 @@ const ROOM = 'group';
 const server = createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: 'https://group-chat-web-socket-app.onrender.com/',
+    origin: 'https://group-chat-web-socket-app.onrender.com',
   },
 });
 
