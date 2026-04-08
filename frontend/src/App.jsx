@@ -2,13 +2,27 @@ import { useEffect, useRef, useState } from 'react';
 import { connectWS } from './ws';
 
 export default function App() {
-  const socket = useRef(null);
+  const socket = useRef(null)
   const [userName, setUserName] = useState('');
   const [showNamePopup, setShowNamePopup] = useState(true);
   const [inputName, setInputName] = useState('');
 
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState('');
+
+  //webSocket configurations
+  
+  useEffect(() => {
+    socket.current = connectWS()
+  },[])
+ 
+  
+
+
+
+
+
+
 
   // FORMAT TIMESTAMP TO HH:MM FOR MESSAGES
   function formatTime(ts) {
