@@ -1,7 +1,7 @@
 {
   "scripts": {
     "build": "cd frontend && npm i && npm run build",
-    "start": "node backend/server.js",
+    "start": " cd backend && node server.js",
     "server": "cd backend && nodemon server",
     "client": "cd frontend && npm run dev",
     "dev": "concurrently --kill-others-on-fail \" npm run server\" \" npm run client\""
