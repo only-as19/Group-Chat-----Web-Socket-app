@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { connectWS } from './ws';
+import { toast } from 'react-toastify';
 
 export default function App() {
   const socket = useRef(null);
@@ -17,9 +18,11 @@ export default function App() {
     socket.current = connectWS();
 
     socket.current.on('connect', () => {
-      socket.current.on('roomNotice', (userName) => {
-        console.log(`${userName} is added to group`);
-      });
+       setTimeout(() => {
+         socket.current.on('roomNotice', (userName) => {
+           toast.success(`${userName} is added to group`);
+         });
+       }, 100);
       socket.current.on('chatMessage', (msg) => {
         console.log(msg);
         setMessages((prev) => [...prev, msg]);
