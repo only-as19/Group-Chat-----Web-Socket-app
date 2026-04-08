@@ -9,7 +9,7 @@ export default function App() {
 
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState('');
-
+  const [typers, setTypers] = useState([]);
   //webSocket configurations
 
   useEffect(() => {
@@ -21,10 +21,27 @@ export default function App() {
       });
       socket.current.on('chatMessage', (msg) => {
         console.log(msg);
-        setMessages((prev)=> [...prev,msg])
+        setMessages((prev) => [...prev, msg]);
+      });
+
+      socket.current.on('showTyping', (userName) => {
+        console.log(`${userName} is typing`);
+        setTypers((prev) => {
+          const isExist = prev.find((user) => user === userName);
+          if (!isExist) {
+            return [...prev, userName];
+          }
+          return prev;
+        })
+        
       });
     });
   }, []);
+  useEffect(() => {
+    if (text) {
+      socket.current.emit('showTyping', userName);
+    }
+  }, [text]);
 
   // FORMAT TIMESTAMP TO HH:MM FOR MESSAGES
   function formatTime(ts) {
@@ -115,8 +132,13 @@ export default function App() {
               <div className='text-sm font-medium text-[#303030]'>
                 Realtime group chat
               </div>
-
-              <div className='text-xs text-gray-500'>someone is typing...</div>
+              {typers.length ? (
+                <div className='text-xs text-gray-500'>
+                  {typers.join(',')} is typing...
+                </div>
+              ) : (
+                ''
+              )}
             </div>
             <div className='text-sm text-gray-500'>
               Signed in as{' '}

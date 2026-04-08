@@ -24,6 +24,10 @@ io.on('connection', (socket) => {
   socket.on('chatMessage', (msg) => {
     socket.to(ROOM).emit('chatMessage', msg);
   });
+
+  socket.on('showTyping', (userName) => {
+    socket.to(ROOM).emit('showTyping', userName);
+  });
 });
 
 app.get('/', (req, res) => {
